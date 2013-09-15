@@ -58,7 +58,7 @@ sub subscriber_add {
 
 sub subscriber_del {
   my ($self, $obj) = @_;
-  $self->_subbed->delete( refaddr($obj) )
+  $self->_subbed->delete( refaddr($obj) ) ? 1 : ()
 }
 
 sub broadcast {
@@ -72,9 +72,9 @@ sub broadcast {
   );
 
   my $meth = $self->dispatch_to;
-  for my $obj ($self->subscribers) {
-    my $actual = $proto->clone_for($obj);
-    $obj->$meth($actual)
+  for ($self->subscribers) {
+    my $actual = $proto->clone_for($_);
+    $_->$meth($actual)
   }
 
   1
