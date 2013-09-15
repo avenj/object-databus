@@ -32,7 +32,7 @@ has dispatch_to => (
 has message_discipline => (
   is        => 'ro',
   isa       => Bool,
-  default   => sub { 0 },
+  default   => sub { 1 },
 );
 
 has _subbed => (
@@ -61,14 +61,21 @@ sub unsubscribe {
   $self->_subbed->delete( refaddr($obj) ) ? 1 : ()
 }
 
-sub broadcast {
-  my ($self, $msg) = @_;
+sub unsubscribe_all {
+  my ($self, $obj) = @_;
+  $self->_subbed->clear
+}
 
-  $self->_validate_bus_msg(\$msg) if $self->message_discipline;
+sub broadcast {
+  my ($self, @data) = @_;
+
+  my $msg = \@data;
+  $self->_validate_bus_msg($msg) if $self->message_discipline;
   
   my $proto = Object::DataBus::Message->new(
     bus    => $self,
     data   => $msg,
+    pkg    => scalar(caller),
   );
 
   my $meth = $self->dispatch_to;
@@ -93,3 +100,19 @@ sub _validate_bus_msg {
 
 
 1;
+
+=pod
+
+=head1 NAME
+
+Object::DataBus::Role::Broadcast - Data bus subscription and relay methods
+
+=head1 SYNOPSIS
+
+=head1 DESCRIPTION
+
+=head1 AUTHOR
+
+Jon Portnoy <avenj@cobaltirc.org>
+
+=cut
