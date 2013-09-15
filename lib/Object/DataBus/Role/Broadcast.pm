@@ -1,14 +1,16 @@
 package Object::DataBus::Role::Broadcast;
 use strictures 1;
 
-use List::Objects::WithUtils ':functions';
-use List::Objects::Types -all;
-
+use Carp;
 use Data::Dumper ();
-
 use Scalar::Util 'blessed', 'refaddr';
 
+use List::Objects::WithUtils ':functions';
+use List::Objects::Types -all;
+use Types::Standard -all;
+
 use Object::DataBus::Traveller;
+
 
 use Moo::Role;
 use namespace::clean;
@@ -18,6 +20,13 @@ has alias => (
   is        => 'ro',
   isa       => Str,
   default   => sub { my ($self) = @_; "$self" },
+);
+
+has dispatch_to => (
+  lazy      => 1,
+  is        => 'ro',
+  isa       => Str,
+  default   => sub { '_bus_dispatch' },
 );
 
 has message_discipline => (
@@ -51,7 +60,6 @@ sub subscribers {
 sub subscriber_add {
   my ($self, $obj) = @_;
   $self->_subbed->set( refaddr($obj) => $obj );
-  # FIXME validate subscriber can receive _bus_dispatch ?
 }
 
 sub subscriber_del {
@@ -62,7 +70,8 @@ sub subscriber_del {
 sub broadcast {
   my ($self, $msg) = @_;
   $self->_validate_bus_msg(\$msg);
-  $_->_bus_dispatch($msg) for $self->subscribers;
+  my $meth = $self->dispatch_to;
+  $_->$meth($msg) for $self->subscribers;
 }
 
 sub _validate_bus_msg {

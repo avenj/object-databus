@@ -1,7 +1,8 @@
 package Object::DataBus;
-use 5.10.1;
 use strictures 1;
 
+use Moo;
+with 'Object::DataBus::Role::Broadcast';
 
 
 1;
