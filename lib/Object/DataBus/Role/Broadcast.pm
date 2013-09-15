@@ -3,13 +3,13 @@ use strictures 1;
 
 use Carp;
 use Data::Dumper ();
-use Scalar::Util 'blessed', 'refaddr';
+use Scalar::Util 'blessed', 'refaddr', 'weaken';
 
 use List::Objects::WithUtils ':functions';
 use List::Objects::Types -all;
 use Types::Standard -all;
 
-use Object::DataBus::Traveller;
+use Object::DataBus::Message;
 
 
 use Moo::Role;
@@ -41,16 +41,6 @@ has _subbed => (
   default   => sub { hash },
 );
 
-has _traveller => (
-  lazy      => 1,
-  is        => 'ro',
-  isa       => InstanceOf['Object::DataBus::Traveller'],
-  default   => sub {
-    my ($self) = @_;
-    Object::DataBus::Traveller->new( bus => $self )
-  },
-);
-
 sub subscribers {
   # Return objects.
   my ($self) = @_;
@@ -58,8 +48,12 @@ sub subscribers {
 }
 
 sub subscriber_add {
-  my ($self, $obj) = @_;
+  my ($self, $obj, %params) = @_;
   $self->_subbed->set( refaddr($obj) => $obj );
+  unless (defined $params{weaken} && !$params{weaken}) {
+    weaken($self->_subbed->{refaddr($obj)})
+  }
+  1
 }
 
 sub subscriber_del {
@@ -69,16 +63,26 @@ sub subscriber_del {
 
 sub broadcast {
   my ($self, $msg) = @_;
-  $self->_validate_bus_msg(\$msg);
+
+  $self->_validate_bus_msg(\$msg) if $self->message_discipline;
+  
+  my $proto = Object::DataBus::Message->new(
+    bus    => $self,
+    data   => $msg,
+  );
+
   my $meth = $self->dispatch_to;
-  $_->$meth($msg) for $self->subscribers;
+  for my $obj ($self->subscribers) {
+    my $actual = $proto->clone_for($obj);
+    $obj->$meth($actual)
+  }
+
+  1
 }
 
 sub _validate_bus_msg {
   my ($self, $msgref) = @_;
   
-  return unless $self->message_discipline;
-
   confess "Expected ARRAY or array-type object, got ".$$msgref
     unless ref $$msgref eq 'ARRAY'
     or is_ArrayObj($$msgref);

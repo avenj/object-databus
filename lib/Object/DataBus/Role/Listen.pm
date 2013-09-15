@@ -3,7 +3,7 @@ use strictures 1;
 
 use List::Objects::WithUtils;
 
-use Moo::Role;
+use Role::Tiny;
 use namespace::clean;
 
 
