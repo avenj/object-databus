@@ -4,8 +4,6 @@ use strictures 1;
 use Carp 'confess';
 use Scalar::Util 'blessed', 'weaken';
 
-use Types::Standard -all;
-
 use namespace::clean;
 
 sub BUS  () { 0 }
