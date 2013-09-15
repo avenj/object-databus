@@ -56,7 +56,7 @@ sub broadcast {
 
 sub unsubscribe {
   my ($self) = @_;
-  $self->bus->subscriber_del( $self->_obj )
+  $self->bus->unsubscribe( $self->_obj )
 }
 
 1;

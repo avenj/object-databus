@@ -47,7 +47,7 @@ sub subscribers {
   $self->_subbed->values->all
 }
 
-sub subscriber_add {
+sub subscribe {
   my ($self, $obj, %params) = @_;
   $self->_subbed->set( refaddr($obj) => $obj );
   unless (defined $params{weaken} && !$params{weaken}) {
@@ -56,7 +56,7 @@ sub subscriber_add {
   1
 }
 
-sub subscriber_del {
+sub unsubscribe {
   my ($self, $obj) = @_;
   $self->_subbed->delete( refaddr($obj) ) ? 1 : ()
 }
