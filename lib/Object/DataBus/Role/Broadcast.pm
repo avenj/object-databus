@@ -32,7 +32,7 @@ has dispatch_to => (
 has message_discipline => (
   is        => 'ro',
   isa       => Bool,
-  default   => sub { 1 },
+  default   => sub { 0 },
 );
 
 has _subbed => (
@@ -69,9 +69,9 @@ sub unsubscribe_all {
 sub broadcast {
   my ($self, @data) = @_;
 
-  my $msg = \@data;
-  $self->_validate_bus_msg($msg) if $self->message_discipline;
-  
+  my $msg = $self->_pack_bus_msg(@data);
+  $self->_validate_bus_msg(\$msg) if $self->message_discipline;
+
   my $proto = Object::DataBus::Message->new(
     bus    => $self,
     data   => $msg,
@@ -87,15 +87,15 @@ sub broadcast {
   1
 }
 
-sub _validate_bus_msg {
-  my ($self, $msgref) = @_;
-  
-  confess "Expected ARRAY or array-type object, got ".$$msgref
-    unless ref $$msgref eq 'ARRAY'
-    or is_ArrayObj($$msgref);
+sub _pack_bus_msg {
+  my ($self, @data) = @_;
+  immarray @data
+}
 
-  $$msgref = immarray( blessed $$msgref ? $$msgref->all : @$msgref )
-    unless is_ImmutableArray($$msgref);
+sub _validate_bus_msg {
+  # my ($self, $msgref) = @_;
+  # my $msg = $$msgref;
+  1
 }
 
 
