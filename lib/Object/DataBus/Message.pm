@@ -68,3 +68,58 @@ sub unsubscribe {
 }
 
 1;
+
+=pod
+
+=head1 NAME
+
+Object::DataBus::Message - An encapsulated data bus message
+
+=head1 SYNOPSIS
+
+FIXME
+
+=head1 DESCRIPTION
+
+=head2 Message methods
+
+=head3 data
+
+FIXME
+
+=head3 pkg
+
+FIXME
+
+=head2 Traveller methods
+
+These methods are proxied to the L<Object::DataBus> that spawned the message.
+
+=head3 alias
+
+FIXME
+
+=head3 broadcast
+
+FIXME
+
+=head3 unsubscribe
+
+FIXME
+
+=head2 Construction methods
+
+(These are only useful if you are implementing a
+L<Object::DataBus::Role::Broadcast> consumer; there is no need to construct
+your own L<Object::DataBus::Message> prior to sending.)
+
+=head3 new
+
+=head3 clone_for
+
+=head1 AUTHOR
+
+Jon Portnoy <avenj@cobaltirc.org>
+
+
+=cut
