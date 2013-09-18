@@ -9,6 +9,7 @@ my $expected = {
   'event foo correct args' => 2,
 };
 
+# Bare Role::Listen consumer:
 { package
     My::SimpleSub;
   use strict; use warnings FATAL => 'all';
@@ -33,6 +34,10 @@ ok $bus->subscribe( $second ), 'subscribed second obj';
 
 ok $bus->broadcast( foo => qw/bar baz/ ), 'broadcast returned true';
 is_deeply $got, $expected, 'subscriber results look ok';
+
+ok $bus->alias eq "$bus", 'bus default alias ok';
+ok $bus->dispatch_to eq '_bus_dispatch', 'bus dispatch_to ok';
+ok $bus->message_discipline == 0, 'bus default message_discipline ok';
 
 ok $bus->subscribers == 2, 'subscribers returned 2 values';
 for my $obj ($bus->subscribers) {
