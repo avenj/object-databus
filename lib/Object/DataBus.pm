@@ -61,6 +61,11 @@ Object::DataBus - Minimalist but extensible data bus
     default => sub { My::Second->new },
   );
 
+  sub BUILD {
+    my ($self) = @_;
+    $self->bus->subscribe( $_ ) for $self->first, $self->second;
+  }
+
   sub do_work {
     my ($self, @data) = @_;
     $self->bus->broadcast( foo => @data )
