@@ -5,14 +5,16 @@ BEGIN { use_ok 'Object::DataBus' }
 
 my $got = {};
 my $expected = {
-  'got event foo'          => 2,
-  'event foo correct args' => 2,
+  'got event foo'               => 2,
+  'event foo got Message'       => 2,
+  'event foo data is immutable' => 2,
 };
 
 # Bare Role::Listen consumer:
 { package
     My::SimpleSub;
   use strict; use warnings FATAL => 'all';
+  use Test::More;
   use Moo;
   with 'Object::DataBus::Role::Listen';
   sub recv_foo {
@@ -20,8 +22,20 @@ my $expected = {
     $got->{'got event foo'}++;
 
     if ($bmsg->isa('Object::DataBus::Message')) {
-      $got->{'event foo correct args'}++
+      $got->{'event foo got Message'}++
+    } else {
+      die "Expected Message object, got $bmsg"
     }
+
+    if ($bmsg->data->isa('List::Objects::WithUtils::Array::Immutable')) {
+      $got->{'event foo data is immutable'}++
+    } else {
+      die "Expected an immarray object but got ".$bmsg->data
+    }
+
+    my @arr = $bmsg->data->all;
+    is_deeply \@arr, [ foo => 'bar', 'baz' ],
+      'data looks ok';
   }
 }
 
