@@ -32,7 +32,11 @@ ok $bus->subscribe( $first ), 'subscribed first obj';
 ok $bus->subscribe( $second ), 'subscribed second obj';
 
 ok $bus->broadcast( foo => qw/bar baz/ ), 'broadcast returned true';
-
 is_deeply $got, $expected, 'subscriber results look ok';
+
+ok $bus->subscribers == 2, 'subscribers returned 2 values';
+for my $obj ($bus->subscribers) {
+  isa_ok $obj, 'My::SimpleSub', 'subscribers returned obj ok';
+}
 
 done_testing;
