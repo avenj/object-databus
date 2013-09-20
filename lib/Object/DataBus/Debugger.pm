@@ -1,23 +1,13 @@
 package Object::DataBus::Debugger;
+use strictures 1;
+use Data::Dumper 'Dumper';
+use namespace::clean;
 
-use Data::Dumper ();
-use Types::Standard -types;
-
-use Moo;
-
-has bus => (
-  required  => 1,
-  is        => 'ro',
-  isa       => ConsumerOf['Object::DataBus::Role::Broadcast'],
-  trigger   => sub {
-    my ($self, $val) = @_;
-    $val->subscribe($self);
-  },
-);
+sub new { bless [], shift }
 
 sub _bus_dispatch {
   my ($self, $msg) = @_;
-  print Data::Dumper::Dumper($msg);
+  print Dumper $msg
 }
 
 1;
