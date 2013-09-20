@@ -6,7 +6,8 @@ with 'Object::DataBus::Role::Listen';
 sub recv_message {
   my ($self, $bmsg) = @_;
   my (undef, $data) = $bmsg->data->head;
-  say "First subscriber got message ".$data->get(0);
+  my ($cmd, $ircmsg, $hints) = $data->all;
+  say "First subscriber got message ".$ircmsg->stream_to_line;
 }
 
 package My::SecondSub;
@@ -17,7 +18,8 @@ with 'Object::DataBus::Role::Listen';
 sub recv_message {
   my ($self, $bmsg) = @_;
   my (undef, $data) = $bmsg->data->head;
-  say "Second subscriber got message ".$data->get(0);
+  my ($cmd, $ircmsg, $hints) = $data->all;
+  say "Second subscriber got message ".$ircmsg->stream_to_line;
 }
 
 package My::IRC;
