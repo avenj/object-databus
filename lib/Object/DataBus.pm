@@ -15,6 +15,8 @@ Object::DataBus - Minimalist but extensible data bus
 
 =head1 SYNOPSIS
 
+  FIXME better SYNOPSIS (IO::Async + Object::DataBus ?)
+
   ## Simple usage ->
   # A pair of objects that talk to each other:
 

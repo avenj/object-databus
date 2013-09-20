@@ -3,6 +3,11 @@ use strict; use warnings FATAL => 'all';
 
 BEGIN { use_ok 'Object::DataBus' }
 
+# Test covers:
+#   - Object::DataBus subscribe/unsubscribe
+# FIXME - ->unsubscribe_all
+# FIXME - Object destruction / weaken => 0
+
 my $got = {};
 my $expected = {
   'got event foo' => 3,

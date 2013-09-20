@@ -1,6 +1,13 @@
 use Test::More;
 use strict; use warnings FATAL => 'all';
 
+# Test covers:
+#   - Object::DataBus subscription
+#     - attribute defaults
+#   - Object::DataBus::Role::Listen
+#     - Message dispatch
+#     - Message payloads
+
 BEGIN { use_ok 'Object::DataBus' }
 
 my $got = {};
