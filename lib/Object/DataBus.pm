@@ -15,63 +15,63 @@ Object::DataBus - Minimalist but extensible data bus
 
 =head1 SYNOPSIS
 
-  FIXME better SYNOPSIS (IO::Async + Object::DataBus ?)
+  # A data bus that is an IRC client ->
 
-  ## Simple usage ->
-  # A pair of objects that talk to each other:
-
-  package My::First;
+  package My::Subscriber;
   use Moo;
-  # The Listen role assumes the first data item is an event name
-  # and redispatches to method 'recv_$event':
+  use feature 'say';
   with 'Object::DataBus::Role::Listen';
-  sub recv_foo {
-    my ($self, $bmsg)   = @_;
-    # Ignore the first item ('foo'):
-    my (undef, @params) = $bmsg->data->all;
-    # ... do some work ...
-    # Pass a message:
-    $bmsg->broadcast( bar => qw/ baz quux / );
+  
+  # Role::Listen default behavior; uses the first item in the data payload
+  # as an event name and dispatches to 'recv_$event'
+  sub recv_message {
+    my ($self, $bmsg) = @_;
+    # $bmsg->data payload is packed into an immutable array obj by default
+    # (specifically a List::Objects::WithUtils::Array::Immutable)
+    my (undef, $data) = $bmsg->data->head;
+    my ($cmd, $ircmsg, $hints) = $data->all;
+    say "First subscriber got message ".$ircmsg->stream_to_line;
   }
 
-  package My::Second;
+  package My::IRC;
+  use IO::Async::Loop; 
+  use Net::Async::IRC;
   use Moo;
-  with 'Object::DataBus::Role::Listen';
-  sub recv_bar {
-    my ($self, $bmsg)   = @_;
-    my (undef, @params) = $bmsg->data->all;
-    # ...
-  }
+  with 'Object::DataBus::Role::Broadcast';
 
-  # A class with a bus that manages our objects:
-  package My::Class;
-  use Object::DataBus;
-  use Moo;
+  has _loop => ( is => 'ro', builder => sub { IO::Async::Loop->new } );
+  has irc   => ( is => 'ro', builder => 1 );
 
-  has bus => (
-    is      => 'ro',
-    default => sub { Object::DataBus->new },
-  );
-
-  has first => (
-    is      => 'ro',
-    default => sub { My::First->new },
-  );
-
-  has second => (
-    is      => 'ro',
-    default => sub { My::Second->new },
-  );
-
-  sub BUILD {
+  sub _build_irc {
     my ($self) = @_;
-    $self->bus->subscribe( $_ ) for $self->first, $self->second;
+    Net::Async::IRC->new(
+      on_message => sub {
+        my $irc = shift;
+        # Dispatch to our subscribers:
+        $self->broadcast( message => @_ )
+      },
+    )
   }
 
-  sub do_work {
-    my ($self, @data) = @_;
-    $self->bus->broadcast( foo => @data )
+  sub run {
+    my ($self) = @_;
+    $self->_loop->add( $self->irc );
+    $self->irc->login(
+      nick => 'DataBusExample'.$$,
+      host => 'irc.cobaltirc.org',
+      on_login => sub {
+        my ($irc) = @_;
+        # ...
+      },
+    );
+    $self->_loop->loop_forever;
   }
+
+  package main;
+  my $ircbus = My::IRC->new;
+  my $subbed = My::Subscriber->new;
+  $ircbus->subscribe( $subbed );
+  $ircbus->run
 
 =head1 DESCRIPTION
 

@@ -38,8 +38,8 @@ sub _build_irc {
   my ($self) = @_;
   Net::Async::IRC->new(
     on_message => sub {
-      my ($irc, $msg, $hints) = @_;
-      $self->broadcast( message => $msg, $hints )
+      my $irc = shift;
+      $self->broadcast( message => @_ )
     },
   )
 }
