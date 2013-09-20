@@ -42,8 +42,11 @@ has _subbed => (
 );
 
 sub subscribers {
-  # Return objects.
   my ($self) = @_;
+  for my $kv ($self->_subbed->kv->all) {
+    # Clear out-of-scope objects.
+    $self->_subbed->delete( $kv->[0] ) unless defined $kv->[1]
+  }
   $self->_subbed->values->all
 }
 
