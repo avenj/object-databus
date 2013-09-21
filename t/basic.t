@@ -65,4 +65,10 @@ for my $obj ($bus->subscribers) {
   isa_ok $obj, 'My::SimpleSub', 'subscribers returned obj ok';
 }
 
+# weaken =>
+$bus->subscribe( My::SimpleSub->new );
+ok $bus->subscribers == 2, 'weak ref to sub went away';
+$bus->subscribe( My::SimpleSub->new, weaken => 0 );
+ok $bus->subscribers == 3, 'non-weak ref sub stuck around';
+
 done_testing;
