@@ -49,6 +49,12 @@ Object::DataBus::Role::Listen - Simple dispatch for data bus messages
 This is a (purely optional) role for simple L<Object::DataBus> subscriber
 objects.
 
+It provides a C<_bus_dispatch> method that considers the first item in the
+data payload to be an event name. The message is re-dispatched to a
+C<recv_$event> method (if available).
+
+The payload is left untouched (the first item will still be the event name).
+
 =head1 AUTHOR
 
 Jon Portnoy <avenj@cobaltirc.org>

@@ -113,13 +113,14 @@ bus message data is assumed to be in the format of C<< $event => @params >>
 and dispatched to the subscribed object's C<recv_$event> method (if present),
 but any object can provide a B<_bus_dispatch> method and hook into the bus.
 
-Data is packaged up into L<Object::DataBus::Message> objects; these serve as
+Messages are delivered as L<Object::DataBus::Message> objects; these serve as
 'travellers', visiting all of your subscribers and providing messages and a
 safe interface to the bus.
 
 By default, message data is packaged up into a
-L<List::Objects::WithUtils::Array::Immutable> object. Most methods
-are documented in L<List::Objects::WithUtils::Role::Array>.
+L<List::Objects::WithUtils::Array::Immutable> object.
+See the documentation for that module and
+L<List::Objects::WithUtils::Role::Array> for details.
 
 This particular class can be instanced to provide a simple data bus.
 L<Object::DataBus::Role::Broadcast> provides all implemented methods; see the

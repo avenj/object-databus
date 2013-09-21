@@ -156,6 +156,9 @@ Broadcast some data to all bus subscribers.
 By default, the provided list will be packed into a
 L<List::Objects::WithUtils::Array::Immutable>. See L</_pack_bus_msg>.
 
+It's worth noting that your subscribers shouldn't modify referenced data when
+it is delivered, as message delivery order is not defined.
+
 =head3 subscribers
 
 All objects subscribed to the data bus (as a list).
@@ -171,6 +174,9 @@ of scope in your codebase, the data bus forgets about it. You can turn this
 off on a per-object basis:
 
   $bus->subscribe( $object, weaken => 0 );
+
+... in which case the object will hang around until unsubscribed (or the bus
+goes away).
 
 =head3 unsubscribe
 

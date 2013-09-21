@@ -115,7 +115,11 @@ your own L<Object::DataBus::Message> prior to sending.)
 
 =head3 new
 
+FIXME
+
 =head3 clone_for
+
+FIXME
 
 =head1 AUTHOR
 
