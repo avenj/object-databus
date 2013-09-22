@@ -4,13 +4,12 @@ use strictures 1;
 use Carp;
 use Scalar::Util 'blessed', 'weaken';
 
-use namespace::clean;
-
 sub BUS  () { 0 }
 sub OBJ  () { 1 }
 sub DATA () { 2 }
 sub PKG  () { 3 }
 
+use namespace::clean;
 
 sub _obj  { $_[0]->[OBJ] }
 sub _bus  { $_[0]->[BUS] }
@@ -34,15 +33,17 @@ sub new {
     $params{data},    # DATA
     $params{pkg},     # PKG
   ];
-  weaken $self->[0];
-  weaken $self->[1] if $self->[1];
+  weaken $self->[BUS];
+  weaken $self->[OBJ] if $self->[OBJ];
   bless $self, $class
 }
 
 sub clone_for {
   my ($self, $obj) = @_;
   my $clone = [ @$self ];
-  weaken $clone->[0]; weaken $clone->[1];
+  $clone->[OBJ] = $obj;
+  weaken $clone->[BUS]; 
+  weaken $clone->[OBJ];
   bless $clone, blessed($self)
 }
 
@@ -70,6 +71,8 @@ sub unsubscribe {
 1;
 
 =pod
+
+=for Pod::Coverage new clone_for
 
 =head1 NAME
 
