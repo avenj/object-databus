@@ -128,6 +128,12 @@ This particular class can be instanced to provide a simple data bus.
 L<Object::DataBus::Role::Broadcast> provides all implemented methods; see the
 documentation for that role for usage details.
 
+Message dispatch is not ordered in any defined way.  If you need something
+that looks more like a plugin pipeline, you may want to check out
+L<MooX::Role::Pluggable>.  L<MooX::Role::POE::Emitter> is a more advanced
+Observer Pattern implementation for POE, and also provides a plugin pipeline
+via L<MooX::Role::Pluggable>.
+
 =head1 AUTHOR
 
 Jon Portnoy <avenj@cobaltirc.org>
