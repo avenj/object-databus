@@ -121,7 +121,7 @@ Object::DataBus::Role::Broadcast - Data bus subscription and relay methods
   use Moo;
   with 'Object::DataBus::Role::Broadcast';
 
-The POD for L<Object::DataBus> contains a more extensive synopsis.
+  # The POD for Object::DataBus contains a more extensive synopsis.
 
 =head1 DESCRIPTION
 
@@ -142,7 +142,7 @@ Defaults to C<_bus_dispatch>
 
 =head3 message_discipline
 
-Controls whether L</_validate_msg> will be called.
+Controls whether L</_validate_bus_msg> will be called.
 
 Defaults to false.
 
