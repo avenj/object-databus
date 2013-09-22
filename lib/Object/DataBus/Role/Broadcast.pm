@@ -67,7 +67,7 @@ sub unsubscribe {
 }
 
 sub unsubscribe_all {
-  my ($self, $obj) = @_;
+  my ($self) = @_;
   $self->_subbed->clear;
   1
 }
