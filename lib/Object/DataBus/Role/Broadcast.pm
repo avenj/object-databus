@@ -75,21 +75,29 @@ sub unsubscribe_all {
 sub broadcast {
   my ($self, @data) = @_;
 
-  my $msg = $self->_pack_bus_msg(@data);
+  my $packed = $self->_pack_bus_msg(@data);
   if ($self->message_discipline) {
-    return unless $self->_validate_bus_msg(\$msg)
+    return unless $self->_validate_bus_msg(\$packed)
   }
 
   my $proto = Object::DataBus::Message->new(
     bus    => $self,
-    data   => $msg,
+    data   => $packed,
     pkg    => scalar(caller),
   );
 
+  $self->_dispatch_bus_msg($proto)
+}
+
+sub _dispatch_bus_msg {
+  my ($self, $bmsg) = @_;
+  confess "Expected an Object::DataBus::Message but got $bmsg"
+    unless blessed $bmsg and $bmsg->isa('Object::DataBus::Message');
+
   my $meth = $self->dispatch_to;
-  for ($self->subscribers) {
-    my $actual = $proto->clone_for($_);
-    $_->$meth($actual)
+  for my $obj ($self->subscribers) {
+    my $actual = $bmsg->clone_for($obj);
+    $obj->$meth($actual)
   }
 
   1

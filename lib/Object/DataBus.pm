@@ -107,7 +107,7 @@ contains sender information:
     $bmsg->broadcast( foo => refaddr($self) => qw/bar baz/ )
   }
 
-Arbitrary lists of data can be sent across the bus.
+Arbitrary data can be sent across the bus.
 L<Object::DataBus::Role::Listen> provides a simplistic dispatch system wherein
 bus message data is assumed to be in the format of C<< $event => @params >>
 and dispatched to the subscribed object's C<recv_$event> method (if present),
@@ -121,6 +121,8 @@ By default, message data is packaged up into a
 L<List::Objects::WithUtils::Array::Immutable> object.
 See the documentation for that module and
 L<List::Objects::WithUtils::Role::Array> for details.
+L<Object::DataBus::Role::Broadcast> provides documentation on overriding this
+behavior.
 
 This particular class can be instanced to provide a simple data bus.
 L<Object::DataBus::Role::Broadcast> provides all implemented methods; see the
