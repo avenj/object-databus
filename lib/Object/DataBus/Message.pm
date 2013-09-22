@@ -77,19 +77,42 @@ Object::DataBus::Message - An encapsulated data bus message
 
 =head1 SYNOPSIS
 
-FIXME
+  # In a subscriber class ->
+  sub _bus_dispatch {
+    my ($self, $bmsg) = @_;
+
+    my $data = $bmsg->data;
+    my $from = $bmsg->alias;
+
+    # ... do work, re-dispatch, whatever ...
+
+    # Send another message:
+    $bmsg->broadcast( ack => 1 );
+
+    # Unsubscribe from the bus:
+    $bmsg->unsubscribe;
+  }
 
 =head1 DESCRIPTION
+
+These objects encapsulate a message delivered by an L<Object::DataBus>. They
+are created when L<Object::DataBus::Role::Broadcast/"broadcast"> is called;
+you shouldn't normally need to construct them yourself (unless overriding
+default broadcast behavior).
+
+These are "traveller" objects of sorts; they carry along a weak reference to
+the bus, so that the receiving end can call relevant methods. See
+L</"Traveller methods">.
 
 =head2 Message methods
 
 =head3 data
 
-FIXME
+Returns the data payload attached to the message.
 
 =head3 pkg
 
-FIXME
+Returns the caller package that originally broadcast the message.
 
 =head2 Traveller methods
 
@@ -97,29 +120,28 @@ These methods are proxied to the L<Object::DataBus> that spawned the message.
 
 =head3 alias
 
-FIXME
+Returns the alias of the sender bus, or an empty list if the bus has gone
+away.
+
+See L<Object::DataBus::Role::Broadcast/"alias">.
 
 =head3 broadcast
 
-FIXME
+Broadcast some data via the bus.
+
+See L<Object::DataBus::Role::Broadcast/"broadcast">.
+
+Warns and returns an empty list if the bus has gone away.
 
 =head3 unsubscribe
 
-FIXME
+Unsubscribes the current object from the bus.
 
-=head2 Construction methods
+See L<Object::DataBus::Role::Broadcast/"unsubscribe">.
 
-(These are only useful if you are implementing a
-L<Object::DataBus::Role::Broadcast> consumer; there is no need to construct
-your own L<Object::DataBus::Message> prior to sending.)
+A subscriber object can only unsubscribe itself via this method.
 
-=head3 new
-
-FIXME
-
-=head3 clone_for
-
-FIXME
+Returns the empty list if the bus has gone away.
 
 =head1 AUTHOR
 

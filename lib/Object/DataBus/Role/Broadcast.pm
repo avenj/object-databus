@@ -153,6 +153,11 @@ Defaults to false.
 
 Broadcast some data to all bus subscribers.
 
+The message (encapsulated in a L<Object::DataBus::Message>) is delivered to
+each subscribed object by calling the L</dispatch_to> method. The only
+argument provided to the called method is the L<Object::DataBus::Message>
+instance.
+
 By default, the provided list will be packed into a
 L<List::Objects::WithUtils::Array::Immutable>. See L</_pack_bus_msg>.
 
