@@ -20,7 +20,7 @@ Object::DataBus - Minimalist but extensible data bus
       # (specifically a List::Objects::WithUtils::Array::Immutable)
       my (undef, $data) = $bmsg->data->head;
       my ($cmd, $ircmsg, $hints) = $data->all;
-      say "First subscriber got message ".$ircmsg->stream_to_line;
+      say "Subscriber got message ".$ircmsg->stream_to_line;
     }
 
     package My::IRC;
