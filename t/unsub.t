@@ -4,9 +4,7 @@ use strict; use warnings FATAL => 'all';
 BEGIN { use_ok 'Object::DataBus' }
 
 # Test covers:
-#   - Object::DataBus subscribe/unsubscribe
-# FIXME - ->unsubscribe_all
-# FIXME - Object destruction / weaken => 0
+#   - Object::DataBus subscribe/unsubscribe(_all)
 
 my $got = {};
 my $expected = {
@@ -37,5 +35,9 @@ $bus->broadcast( foo => qw/bar baz/ );
 is_deeply $got, $expected, 'subscriber results look ok';
 
 ok $bus->subscribers == 1, 'subscribers returned 1 values';
+$bus->subscribe( $first );
+ok $bus->subscribers == 2, 'resubscribed first';
+ok $bus->unsubscribe_all, 'unsubscribe_all returned true';
+ok $bus->subscribers == 0, 'no subscribers remaining';
 
 done_testing;

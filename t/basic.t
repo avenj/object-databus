@@ -4,6 +4,7 @@ use strict; use warnings FATAL => 'all';
 # Test covers:
 #   - Object::DataBus subscription
 #     - attribute defaults
+#     - weak ref behavior
 #   - Object::DataBus::Role::Listen
 #     - Message dispatch
 #     - Message payloads
