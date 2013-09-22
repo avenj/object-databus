@@ -110,7 +110,7 @@ sub _pack_bus_msg {
 
 sub _validate_bus_msg {
   # my ($self, $msgref) = @_;
-  # my $msg = $$msgref;
+  # my $bmsg = $$msgref;
   1
 }
 

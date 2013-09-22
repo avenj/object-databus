@@ -65,7 +65,8 @@ sub broadcast {
 
 sub unsubscribe {
   my ($self) = @_;
-  $self->_bus ? $self->_bus->unsubscribe( $self->_obj ) : ()
+  return unless $self->_bus and $self->_obj;
+  $self->_bus->unsubscribe( $self->_obj )
 }
 
 1;
