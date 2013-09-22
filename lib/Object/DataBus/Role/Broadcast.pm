@@ -68,7 +68,8 @@ sub unsubscribe {
 
 sub unsubscribe_all {
   my ($self, $obj) = @_;
-  $self->_subbed->clear
+  $self->_subbed->clear;
+  1
 }
 
 sub broadcast {
